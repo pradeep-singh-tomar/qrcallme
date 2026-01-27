@@ -25,9 +25,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased text-black`}>
-        {/* Navigation Bar */}
-        <nav className="bg-white border-b border-gray-100 py-4 px-6 flex justify-between items-center sticky top-0 z-50">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased text-black bg-white`}>
+        
+        {/* Navigation Bar - Forced to Top with shadow and high Z-index */}
+        <nav className="bg-white border-b border-gray-100 py-4 px-6 flex justify-between items-center sticky top-0 z-[9999] shadow-sm">
           <Link href="/" className="text-xl font-black tracking-tighter">
             QR<span className="text-blue-600">CallMe</span>
           </Link>
@@ -41,14 +42,19 @@ export default function RootLayout({
           </div>
 
           <div className="flex items-center space-x-4">
-            <Link href="/dashboard" className="bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-blue-700 transition-all shadow-md">
-              My Dashboard
-            </Link>
+            <nav className="space-y-4">
+  <Link href="/admin-dashboard" className="...">Dashboard</Link>
+  <Link href="/admin-dashboard/blog" className="...">Write Blog</Link>
+  <Link href="/admin-dashboard/messages" className="...">Inbox</Link>
+</nav>
           </div>
         </nav>
 
-        {/* Page Content */}
-        {children}
+        {/* Page Content Wrapper - ensures relative positioning doesn't break layout */}
+        <main className="relative">
+          {children}
+        </main>
+        
       </body>
     </html>
   );
