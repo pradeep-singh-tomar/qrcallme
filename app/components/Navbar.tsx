@@ -30,7 +30,7 @@ export default function Navbar() {
   useEffect(() => setIsMenuOpen(false), [pathname]);
 
   const handleLogout = async () => {
-    await supabase.signOut();
+    await supabase.auth.signOut();
     router.push('/');
   };
 

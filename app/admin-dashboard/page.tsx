@@ -22,7 +22,7 @@ export default function AdminDashboard() {
   // ---------------------------------------------------------
   const fetchData = async (tab: string) => {
     setLoading(true);
-    let query = supabase.from(tab);
+    let query: any = supabase.from(tab);
 
     if (tab === 'posts' || tab === 'contact_messages') {
       query = query.select('*').order('created_at', { ascending: false });
