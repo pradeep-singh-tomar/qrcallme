@@ -70,7 +70,7 @@ const faqs = [
 export default function BarcodeGenerator() {
   const [text, setText] = useState('QRCallMe-2025');
   const [format, setFormat] = useState('CODE128');
-  const barcodeRef = useRef<SVGSVGElement>(null);
+  const barcodeRef = useRef<any>(null);
 
   useEffect(() => {
     if (!text.trim() || text === 'QRCallMe-2025' || Object.values(formatExamples).includes(text)) {
@@ -216,20 +216,20 @@ export default function BarcodeGenerator() {
                   {!validationError ? (
                     <>
                       <Barcode
-                        ref={barcodeRef}
-                        value={text.trim() || ' '}
-                        format={format as any}
-                        width={5}
-                        height={160}
-                        displayValue={true}
-                        fontSize={28}
-                        fontColor="#000000"
-                        lineColor="#000000"
-                        background="#ffffff"
-                        margin={30}
-                        textMargin={15}
-                        fontOptions="bold"
-                      />
+  ref={barcodeRef}
+  value={text.trim() || ' '}
+  format={format as any}
+  width={5}
+  height={160}
+  displayValue={true}
+  fontSize={28}
+  // REMOVE fontColor="#000000" <- This was causing the crash
+  lineColor="#000000" // This colors both the lines AND the text
+  background="#ffffff"
+  margin={30}
+  textMargin={15}
+  fontOptions="bold"
+/>
                       <p className="mt-8 text-sm font-black text-slate-500 uppercase tracking-widest">
                         {format} • Generated with ❤️ by QRCallMe
                       </p>
