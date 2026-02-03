@@ -73,7 +73,7 @@ export default function Navbar() {
               </button>
             </div>
           ) : (
-            <Link href="/login" className="bg-slate-900 text-white px-6 py-2.5 rounded-xl hover:bg-black transition-all">
+            <Link href="/user" className="bg-slate-900 text-white px-6 py-2.5 rounded-xl hover:bg-black transition-all">
               Login
             </Link>
           )}
@@ -107,7 +107,7 @@ export default function Navbar() {
               <button onClick={handleLogout} className="text-2xl font-black text-red-500">Logout</button>
             </>
           ) : (
-            <Link href="/login" className="text-2xl font-black text-slate-900">Login</Link>
+            <Link href="/user" className="text-2xl font-black text-slate-900">Login</Link>
           )}
         </div>
       </div>
