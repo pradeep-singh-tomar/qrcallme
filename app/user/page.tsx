@@ -127,7 +127,7 @@ export default function UserDashboard() {
       <div className="flex items-center justify-center min-h-screen bg-[#0F172A] p-6">
         <div className="bg-white p-10 rounded-[40px] shadow-2xl w-full max-w-md text-center">
           <h1 className="text-3xl font-black text-blue-600 mb-6">QRCallMe</h1>
-          <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} providers={['google']} redirectTo={origin ? `${origin}/account` : ""} />
+  		  <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} providers={['google']} redirectTo={origin ? `${origin}/user` : ""} />
         </div>
       </div>
     );

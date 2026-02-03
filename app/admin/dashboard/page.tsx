@@ -1,15 +1,18 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import { useRouter } from 'next/navigation'; // Import router
 
 // Initialize Supabase
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('stats');
   const [data, setData] = useState<any[]>([]);
   const [stats, setStats] = useState({ posts: 0, messages: 0, users: 0, visits: '840k' });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false); // New Guard State
 
   // MODAL STATE
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,13 +62,38 @@ export default function AdminDashboard() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (activeTab === 'stats') {
-      fetchStats();
+ // 🛡️ AUTH GUARD: Check session before doing ANYTHING
+useEffect(() => {
+  const protectRoute = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    // Kick out anyone who isn't you
+    if (!session || session.user.email !== 'pradeepfyou@gmail.com') {
+      router.push('/admin'); 
     } else {
-      fetchData(activeTab);
+      setIsAuthorized(true);
+      setLoading(false); // Stop the initial auth loading
     }
-  }, [activeTab]);
+  };
+  protectRoute();
+}, [router]);
+
+// 📡 DATA FETCHING: Only runs if authorized
+useEffect(() => {
+  if (!isAuthorized) return; 
+
+  if (activeTab === 'stats') {
+    fetchStats();
+  } else {
+    fetchData(activeTab);
+  }
+}, [activeTab, isAuthorized]);
+
+// 🚪 LOGOUT FUNCTION
+const handleLogout = async () => {
+  await supabase.auth.signOut();
+  window.location.href = '/admin'; // Force reload to clear all states
+};
 
   // ---------------------------------------------------------
   // 2. CRUD OPERATIONS
@@ -76,10 +104,22 @@ export default function AdminDashboard() {
     setIsModalOpen(true);
   };
 
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+
+
+const handleInputChange = (e: any) => {
+  const { name, value } = e.target;
+  
+  // Logic to ensure Booleans stay Booleans
+  let finalValue = value;
+  if (value === "true") finalValue = true;
+  if (value === "false") finalValue = false;
+  // Logic to ensure Numbers stay Numbers (important for display_order)
+  if (name === "display_order") finalValue = parseInt(value) || 0;
+
+  setFormData({ ...formData, [name]: finalValue });
+};
+
+
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -215,6 +255,18 @@ export default function AdminDashboard() {
   // ---------------------------------------------------------
   // 4. UI RENDER
   // ---------------------------------------------------------
+  
+  // 3. SECURE RENDER CHECK
+if (!isAuthorized) {
+  return (
+    <div className="min-h-screen bg-[#0F172A] flex items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <p className="text-slate-400 font-bold animate-pulse">Verifying Admin Access...</p>
+      </div>
+    </div>
+  );
+}
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex font-sans text-slate-900">
       {/* NOTIFICATION TOAST */}
@@ -258,7 +310,9 @@ export default function AdminDashboard() {
         </nav>
 
         <div className="pt-6 border-t border-slate-800">
-          <button className="text-xs font-bold text-slate-500 hover:text-white transition-colors">Log Out</button>
+          <button 
+		  onClick={handleLogout}
+		  className="text-xs font-bold text-slate-500 hover:text-white transition-colors">Log Out</button>
         </div>
       </aside>
 
