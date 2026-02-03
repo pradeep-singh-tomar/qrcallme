@@ -37,8 +37,13 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Blog', href: '/blog' },
     { name: 'QRcodes', href: '/generate-qr-code' },
+    { name: 'Barcodes', href: '/generate-bar-code' },
+    { name: 'Pets', href: '/pets-qr-code' },
+    { name: 'Parking', href: '/parking-qr-code' },
     { name: 'WiFi', href: '/share-wifi-qr-code' },
+    { name: 'Baby', href: '/baby-qr-code' },
     { name: 'Contact', href: '/contact' },
+    { name: 'FAQs', href: '/faq' },
   ];
 
   return (

@@ -27,11 +27,9 @@ export default function ProQRGenerator() {
   const [formData, setFormData] = useState<any>({
     url: 'https://qrcallme.com',
   });
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   const qrRef = useRef<SVGSVGElement>(null);
 
-  const mainTypes = ALL_TYPES.slice(0, 6);
-  const otherTypes = ALL_TYPES.slice(6);
 
   // Dynamic SEO
   useEffect(() => {
@@ -57,13 +55,14 @@ export default function ProQRGenerator() {
     }
   }, [activeTab]);
 
-  // Branding logo embedded in QR (appears in preview + both downloads)
+ // Branding logo embedded in QR (appears in preview + both downloads)
   const logoSvg = `<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="60" cy="60" r="54" fill="white"/>
-    <circle cx="60" cy="60" r="54" stroke="#3b82f6" stroke-width="3"/>
-    <text x="60" y="48" font-size="38" font-weight="900" fill="#2563eb" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif">QR</text>
-    <text x="60" y="82" font-size="28" font-weight="900" fill="#2563eb" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif">CallMe</text>
+    <circle cx="60" cy="60" r="58" fill="white"/>
+    <circle cx="60" cy="60" r="54" stroke="#2563eb" stroke-width="4" fill="white"/>
+    <text x="60" y="46" font-size="36" font-weight="900" fill="#2563eb" text-anchor="middle" dominant-baseline="middle" font-family="system-ui, -apple-system, sans-serif">QR</text>
+    <text x="60" y="80" font-size="24" font-weight="900" fill="#2563eb" text-anchor="middle" dominant-baseline="middle" font-family="system-ui, -apple-system, sans-serif">CallMe</text>
   </svg>`;
+  
   const logoSrc = `data:image/svg+xml,${encodeURIComponent(logoSvg)}`;
 
   const getQRValue = () => {
@@ -173,53 +172,31 @@ export default function ProQRGenerator() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* LEFT: CONTENT & OPTIONS */}
           <div className="lg:col-span-8 space-y-6">
+		  
             {/* Tab Navigation */}
-            <div className="flex flex-wrap gap-2 bg-white/80 backdrop-blur p-3 rounded-3xl shadow-lg border border-white/50">
-              {mainTypes.map(t => (
-                <button
-                  key={t.id}
-                  onClick={() => {
-                    setActiveTab(t.id);
-                    setIsDropdownOpen(false);
-                  }}
-                  className={`px-6 py-4 rounded-2xl font-black text-sm transition-all flex items-center gap-3 ${
-                    activeTab === t.id
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                      : 'text-slate-600 hover:bg-white/60 hover:shadow-md'
-                  }`}
-                >
-                  <span className="text-xl">{t.icon}</span> {t.label}
-                </button>
-              ))}
-              <div className="relative">
-                <button
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className={`px-6 py-4 rounded-2xl font-black text-sm transition-all flex items-center gap-3 ${
-                    isDropdownOpen
-                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
-                      : 'bg-white/60 text-slate-700 hover:bg-white hover:shadow-md'
-                  }`}
-                >
-                  <span className="text-xl">➕</span> More
-                </button>
-                {isDropdownOpen && (
-                  <div className="absolute top-full right-0 mt-3 w-64 bg-white/95 backdrop-blur border border-white/50 shadow-2xl rounded-3xl p-3 z-50">
-                    {otherTypes.map(t => (
-                      <button
-                        key={t.id}
-                        onClick={() => {
-                          setActiveTab(t.id);
-                          setIsDropdownOpen(false);
-                        }}
-                        className="w-full flex items-center gap-4 px-5 py-4 text-sm font-bold text-slate-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-purple-700 rounded-2xl transition-all"
-                      >
-                        <span className="text-xl">{t.icon}</span> {t.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
+            {/* All Tabs Navigation - Full Grid Layout */}
+<div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 bg-white/80 backdrop-blur p-4 rounded-[32px] shadow-lg border border-white/50 mb-8">
+  {ALL_TYPES.map((t) => (
+    <button
+      key={t.id}
+      onClick={() => setActiveTab(t.id)}
+      className={`group px-2 py-4 rounded-2xl font-black text-[10px] md:text-xs transition-all flex flex-col items-center justify-center gap-2 border-2 ${
+        activeTab === t.id
+          ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg border-transparent scale-105'
+          : 'bg-white/40 text-slate-600 border-transparent hover:bg-white hover:border-blue-100 hover:shadow-md'
+      }`}
+    >
+      <span className={`text-2xl transition-transform group-hover:scale-110 ${
+        activeTab === t.id ? 'scale-110' : ''
+      }`}>
+        {t.icon}
+      </span>
+      <span className="text-center leading-tight uppercase tracking-tighter">
+        {t.label}
+      </span>
+    </button>
+  ))}
+</div>
 
             {/* Input Panel */}
             <div className="bg-white/90 backdrop-blur p-8 md:p-12 rounded-[40px] shadow-xl border border-white/50">

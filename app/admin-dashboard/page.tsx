@@ -195,6 +195,20 @@ export default function AdminDashboard() {
         );
       default:
         return <p>No form configuration for this tab.</p>;
+		
+		case 'rss_feeds':
+  return (
+    <>
+      <label className={labelClass}>Source Name</label>
+      <input name="name" value={formData.name || ''} onChange={handleInputChange} className={inputClass} placeholder="e.g. TechCrunch" />
+
+      <label className={labelClass}>RSS Feed URL</label>
+      <input name="url" value={formData.url || ''} onChange={handleInputChange} className={inputClass} placeholder="https://site.com/rss" />
+
+      <label className={labelClass}>Category</label>
+      <input name="category" value={formData.category || ''} onChange={handleInputChange} className={inputClass} placeholder="Technology, News, etc." />
+    </>
+  );
     }
   };
 
@@ -220,12 +234,14 @@ export default function AdminDashboard() {
         <nav className="space-y-2 flex-1 overflow-y-auto">
           {[
             { id: 'stats', label: 'Overview', icon: '📊' },
+			{ id: 'profiles', label: 'Manage Users', icon: '👥' },
             { id: 'posts', label: 'Blog Posts', icon: '✍️' },
             { id: 'faqs', label: 'Manage FAQs', icon: '❓' },
-            { id: 'contact_messages', label: 'Inbox', icon: '📩' },
             { id: 'site_pages', label: 'Pages & SEO', icon: '📄' },
+			{ id: 'rss_feeds', label: 'RSS News Feed', icon: '📡' },
             { id: 'site_settings', label: 'Global Settings', icon: '⚙️' },
-            { id: 'profiles', label: 'Manage Users', icon: '👥' },
+			{ id: 'contact_messages', label: 'Inbox', icon: '📩' },
+            
           ].map((item) => (
             <button
               key={item.id}
@@ -320,7 +336,7 @@ export default function AdminDashboard() {
                         <tr key={item.id} className="hover:bg-blue-50/30 transition-colors group">
                           <td className="px-8 py-6">
                             <p className="font-bold text-lg text-slate-800">
-                              {item.title || item.question || item.slug || item.site_name || item.name || item.username || item.full_name || 'Untitled'}
+                              {item.name ||item.title || item.question || item.slug || item.site_name || item.name || item.username || item.full_name || 'Untitled'}
                             </p>
                             <p className="text-xs font-bold text-blue-500 uppercase tracking-wide mt-1">
                               {item.category || item.email || item.role || ''}

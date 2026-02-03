@@ -1,78 +1,77 @@
-"use client"; // We need this to check if the user is logged in
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+import Navbar from './components/Navbar'; 
+import FooterNews from './components/FooterNews';
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
+export const metadata = {
+  title: "QRCallMe",
+  description: "Privacy-first QR solutions",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<any>(null);
-
-  useEffect(() => {
-    // 1. Check if user is logged in on load
-    supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
-
-    // 2. Listen for login/logout changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased text-black bg-white`}>
         
-        <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100 py-4 px-6 flex justify-between items-center sticky top-0 z-[9999] shadow-sm">
-          <Link href="/" className="text-xl font-black tracking-tighter shrink-0">
-            QR<span className="text-blue-600">CallMe</span>
-          </Link>
-          
-          {/* Main Links - Hidden on mobile for beauty */}
-          <div className="hidden lg:flex space-x-6 text-[11px] font-black uppercase tracking-widest text-gray-500"> 
-            <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
-            <Link href="/blog" className="hover:text-blue-600 transition-colors">Blog</Link>
-            <Link href="/generate-qr-code" className="hover:text-blue-600 transition-colors">QRcodes</Link>
-            <Link href="/parking-qr-code" className="hover:text-blue-600 transition-colors">Vehicle</Link>
-            <Link href="/share-wifi-qr-code" className="hover:text-blue-600 transition-colors">Network</Link>
-            <Link href="/contact" className="hover:text-blue-600 transition-colors">Contact</Link>
-          </div>
+        <Navbar />
 
-          <div className="flex items-center space-x-3">
-            {session ? (
-              /* ONLY SHOWS IF LOGGED IN */
-              <div className="flex items-center gap-2">
-                <Link href="/admin-dashboard" className="bg-blue-600 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all">
-                  Dashboard
-                </Link>
-                <button 
-                  onClick={() => supabase.auth.signOut()} 
-                  className="bg-slate-100 text-slate-500 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-50 hover:text-red-600 transition-all"
-                >
-                  Sign Out
-                </button>
-              </div>
-            ) : (
-              /* SHOWS FOR REGULAR VISITORS */
-              <Link href="/login" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-colors">
-                Admin
-              </Link>
-            )}
-          </div>
-        </nav>
-
-        <main className="relative">
+        <main className="relative min-h-screen">
           {children}
         </main>
         
-		
-		<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <footer className="bg-slate-900 text-white py-16 px-6 border-t border-slate-800">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-left">
+              
+              <div className="space-y-4">
+                <h3 className="text-xl font-black bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                  QRCallMe
+                </h3>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  Privacy-first QR solutions for vehicles, pets, and smart IDs. No subscription, no tracking, just security.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                {/* Your RSS feed will load here exactly as it does now */}
+                <FooterNews />
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="text-white font-black uppercase tracking-widest text-[10px] mb-4">
+                  Quick Navigation
+                </h4>
+                <nav className="flex flex-col space-y-2 text-sm text-slate-400 font-bold">
+                  <Link href="/generate-qr-code" className="hover:text-blue-400 transition-colors">QR Generator</Link>
+                  <Link href="/parking-qr-code" className="hover:text-blue-400 transition-colors">Vehicle Tag</Link>
+                  <Link href="/blog" className="hover:text-blue-400 transition-colors">Privacy Blog</Link>
+                  <Link href="/contact" className="hover:text-blue-400 transition-colors">Support</Link>
+                </nav>
+              </div>
+            </div>
+
+           <div className="mt-16 pt-8 border-t border-slate-800 space-y-4">
+  <p className="text-slate-500 text-[12px] font-medium tracking-tight leading-relaxed">
+    Now you can generate free QR codes like Parking QR codes, Baby QR codes, and Pet QR codes for use on bracelets or belts. 
+    Using <span className="text-blue-400 font-bold">www.qrcallme.com</span>, you can also create digital QR Business Cards to share instantly—perfect for 
+    social media influencers, creators, and businesses. <span className="text-blue-400 font-bold">www.qrcallme.com</span> © {new Date().getFullYear()} 
+  </p>
+
+			  
+              <div className="flex gap-6 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                <Link href="/privacy" className="hover:text-white">Privacy</Link>
+                <Link href="/terms" className="hover:text-white">Terms</Link>
+				<Link href="/report" className="text-red-400 hover:text-red-500 transition-colors">Report Abuse</Link>
+              </div>
+            </div>
+          </div>
+        </footer>
+
+        <script src="https://checkout.razorpay.com/v1/checkout.js" async></script>
       </body>
     </html>
   );
