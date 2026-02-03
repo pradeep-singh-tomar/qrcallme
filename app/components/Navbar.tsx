@@ -92,25 +92,46 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      <div className={`lg:hidden fixed inset-0 top-[65px] bg-white transition-all duration-300 ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
-        <div className="flex flex-col p-8 space-y-6 text-center">
-          {navLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="text-2xl font-black text-slate-900">
-              {link.name}
-            </Link>
-          ))}
-          <hr className="border-gray-50" />
-          {user ? (
-            <>
-              <Link href="/admin/dashboard" className="text-2xl font-black text-blue-600">Dashboard</Link>
-              <button onClick={handleLogout} className="text-2xl font-black text-red-500">Logout</button>
-            </>
-          ) : (
-            <Link href="/user" className="text-2xl font-black text-slate-900">Login</Link>
-          )}
+ {/* Mobile Menu Overlay */}
+      <div className={`lg:hidden fixed inset-0 top-[65px] bg-white z-[9998] transition-all duration-300 ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+        <div className="flex flex-col p-6 space-y-3 text-center h-[calc(100vh-65px)] overflow-y-auto bg-white">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link 
+                key={link.href} 
+                href={link.href} 
+                className={`text-xl font-black p-4 rounded-2xl transition-all ${
+                  isActive 
+                    ? 'bg-blue-600 text-white shadow-lg' 
+                    : 'bg-slate-50 text-slate-900 active:bg-slate-100'
+                }`}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
+          
+          <div className="pt-4 mt-2 border-t border-gray-100 flex flex-col gap-3">
+            {user ? (
+              <>
+                <Link href="/admin/dashboard" className="text-xl font-black p-4 rounded-2xl bg-blue-600 text-white shadow-blue-200 shadow-lg">
+                  Dashboard
+                </Link>
+                <button onClick={handleLogout} className="text-xl font-black p-4 rounded-2xl bg-red-50 text-red-500">
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link href="/user" className="text-xl font-black p-4 rounded-2xl bg-slate-900 text-white shadow-xl">
+                Login
+              </Link>
+            )}
+          </div>
         </div>
       </div>
-    </nav>
+	  </nav>
+	
+	
   );
 }

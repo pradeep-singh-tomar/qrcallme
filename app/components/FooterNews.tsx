@@ -23,7 +23,7 @@ export default function FooterNews() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {feeds.map((feed, feedIdx) => (
         <div key={feedIdx} className="space-y-4">
           <h4 className="text-white font-black uppercase tracking-widest text-[10px]">

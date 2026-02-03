@@ -8,26 +8,22 @@ const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env
 export default function HomePage() {
   const [faqs, setFaqs] = useState<any[]>([]);
 
-useEffect(() => {
-  // 1. Fetch FAQs (Your existing logic)
-  const fetchFaqs = async () => {
-    const { data } = await supabase.from('faqs').select('*').order('display_order', { ascending: true });
-    if (data) setFaqs(data);
-  };
-  fetchFaqs();
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      const { data } = await supabase.from('faqs').select('*').order('display_order', { ascending: true });
+      if (data) setFaqs(data);
+    };
+    fetchFaqs();
 
-  // 2. Capture Referral ID from URL (New Logic)
-  // Example URL: qrcallme.com/?ref=12345
-  const urlParams = new URLSearchParams(window.location.search);
-  const ref = urlParams.get('ref');
-  
-  if (ref) {
-    // We store it in localStorage so even if they close the tab 
-    // and come back tomorrow to sign up, the referral still counts!
-    localStorage.setItem('referral_id', ref);
-    console.log("Referral ID captured and saved:", ref);
-  }
-}, []);
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get('ref');
+    
+    if (ref) {
+      localStorage.setItem('referral_id', ref);
+      console.log("Referral ID captured and saved:", ref);
+    }
+  }, []);
+
   return (
     <div className="bg-white text-slate-900 overflow-hidden">
       
@@ -60,29 +56,34 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* 2. CORE FEATURES GRID */}
+      {/* 2. CORE FEATURES GRID - Now Linked to Pages */}
       <section className="py-24 bg-slate-50 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { title: 'Vehicle QR', desc: 'Allow others to contact you for parking issues without revealing your phone number.', icon: '🚗', color: 'blue' },
-              { title: 'Pet Security', desc: 'Smart ID tags that notify you when scanned. Keep your furry friends safe.', icon: '🐕', color: 'purple' },
-              { title: 'Baby Safety', desc: 'Secure QR tags for strollers and backpacks with emergency contact info.', icon: '👶', color: 'orange' },
-              { title: 'Instant WiFi', desc: 'Share your home network safely with guests. No more shouting passwords.', icon: '📡', color: 'emerald' },
-              { title: 'Dynamic Files', desc: 'Upload PDFs or Images and get a QR code that stays valid for 24 hours.', icon: '📂', color: 'pink' },
-              { title: 'Privacy Shield', desc: 'We never store your personal data. All temporary files are deleted daily.', icon: '🛡️', color: 'indigo' },
+              { title: 'Vehicle QR', desc: 'Contact owners without revealing phone numbers.', icon: '🚗', href: '/parking-qr-code' },
+              { title: 'Pet Security', desc: 'Smart ID tags that notify you when scanned.', icon: '🐕', href: '/pets-qr-code' },
+              { title: 'Baby Safety', desc: 'Secure QR tags for strollers and backpacks.', icon: '👶', href: '/baby-qr-code' },
+              { title: 'Instant WiFi', desc: 'Share your network safely without passwords.', icon: '📡', href: '/share-wifi-qr-code' },
+              { title: 'Barcodes', desc: 'Professional barcode generator for products.', icon: '🏷️', href: '/generate-bar-code' },
+              { title: 'Contact Card', desc: 'Digital QR Business Cards for instant sharing.', icon: '📇', href: '/generate-qr-code' },
             ].map((feature, i) => (
-              <div key={i} className="bg-white p-10 rounded-[40px] border border-slate-100 hover:shadow-2xl transition-all group">
-                <div className="text-4xl mb-6 group-hover:scale-125 transition-transform duration-500">{feature.icon}</div>
-                <h3 className="text-2xl font-black mb-4">{feature.title}</h3>
-                <p className="text-slate-500 font-medium leading-relaxed">{feature.desc}</p>
-              </div>
+              <Link key={i} href={feature.href} className="group">
+                <div className="bg-white h-full p-10 rounded-[40px] border border-slate-100 hover:border-blue-300 hover:shadow-2xl transition-all flex flex-col items-start text-left">
+                  <div className="text-4xl mb-6 group-hover:scale-110 transition-transform duration-300">{feature.icon}</div>
+                  <h3 className="text-2xl font-black mb-4">{feature.title}</h3>
+                  <p className="text-slate-500 font-medium leading-relaxed mb-6">{feature.desc}</p>
+                  <span className="mt-auto text-blue-600 font-black text-xs uppercase tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                    Start Now <span>→</span>
+                  </span>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 3. DYNAMIC FAQ SECTION (SEO GOLD) */}
+      {/* 3. DYNAMIC FAQ SECTION */}
       <section className="py-24 px-6 max-w-4xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4">Common Questions</h2>
@@ -119,23 +120,3 @@ useEffect(() => {
     </div>
   );
 }
-
-
-{/* SEO Structured Data */}
-<script
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{
-    __html: JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "QRCallMe",
-      "url": "https://qrcallme.com",
-      "logo": "https://qrcallme.com/logo.png",
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+1-123-456-7890",
-        "contactType": "customer service"
-      }
-    }),
-  }}
-/>
